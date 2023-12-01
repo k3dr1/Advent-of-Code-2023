@@ -1,5 +1,6 @@
 ## Advent-of-Code-2023
-#My solutions to Advent Of Code 2023
+
+My solutions to Advent Of Code 2023!
 
 The main objective is to not get filtered for as long as possible. The secondary objectives are:
 * Improve my regex skills
