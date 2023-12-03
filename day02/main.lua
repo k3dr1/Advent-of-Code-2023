@@ -51,7 +51,6 @@ local function powerMinCubes(s)
 	return minr*ming*minb
 end
 
-
 local file = io.open("input.txt", "r")
 
 if file then
