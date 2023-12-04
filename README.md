@@ -12,6 +12,6 @@ I will try to not use my main languages (C++/Python) for as long as I can, to ma
 | Day       | Difficulty   | Notes                                     | Learned                          |
 | --------- | ------------ | ----------------------------------------- | -------------------------------- |
 | Day 1     | 4/10         | The second part was pretty tedious        | Aho-Corasick                     |
-| Day 2     | 2/10         | Anticipated some probability stuff...     | Content Cel                      |
-| Day 3     | 5/10         | 2D grid, need to brush up on pathfinding  | Content Cel                      |
+| Day 2     | 2/10         | Anticipated some probability stuff...     | ...                              |
+| Day 3     | 5/10         | 2D grid, need to brush up on pathfinding  | ...                              |
 | Day 4     | 2/10         | Extremely for some reason                 | Set intersection Implementation  |
