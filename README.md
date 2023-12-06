@@ -16,4 +16,4 @@ I will try to not use my main languages (C++/Python) for as long as I can, to ma
 | Day 3     | 5/10         | 2D grid, need to brush up on pathfinding         | ...                               |
 | Day 4     | 2/10         | Extremely easy for some reason                   | Set Intersection Implementation   |
 | Day 5     | 7/10         | Pretty interesting solution without bruteforce   | More intersection/reverse mapping |
-| Day 4     | 1/10         | EASIEST                                          |                                   |
+| Day 6     | 1/10         | EASIEST                                          | Quite nothing literally           |
