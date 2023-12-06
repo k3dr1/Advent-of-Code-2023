@@ -1,0 +1,2 @@
+-- Lol I did today's problem in a notebook
+-- sry, no code for today :sob:
