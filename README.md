@@ -23,4 +23,16 @@ I will try to not use my main languages (C++/Python) for as long as I can, to ma
 | Day 10    | 6/10         | Best day so far. I used Jordan Curve Theorem but  there are so many other solutions, it's great | Grid expansion (1x1 -> 3x3 or 2x2), Raycasting (evenodd) algorithm for a point inside the polygon, Winding number (nonzero) algorithm for the point inside the polygon, Jordan Curve Theorem, Stack based floodfill, Scan fill, Pick's Theorem, Shoelace Formula (which is apparently a special case of Green's Theorem) |
 | Day 11    | 3/10         | Apparently can be done in O(n) since dimensions are completely independent when taking manhattan distance. My solution is O(n<sup>2</sup>) but even that was enough to get the answer instantly, so pretty easy  | ...                                |
 | Day 12    | 8/10         | Pretty hard, took me some time to get the DP solution correct | ...                                |
-| Day 13     | 5/10         | Much easier than Day 12. The statement of the problem is a bit vague, but solved it quite fast | Levenshtein distance, Hamming distance |
+| Day 13    | 5/10         | Much easier than Day 12. The statement of the problem is a bit vague, but solved it quite fast | Levenshtein distance, Hamming distance |
+| Day 14    | 6/10         | Quite easy                                       | ...                                |
+| Day 15    | 5/10         | Hashtables! Also pretty easy                     | ...                                |
+| Day 16    | 6/10         | The logic was tedious, but overall not too hard  | ...                                |
+| Day 17    | 8/10         | Bruhhh, spent way too much time on this          | Pathfinding (spec. A* & Dijkstra)  |
+| Day 18    | 0/10         | .                                                | ...                                |
+| Day 19    | 0/10         | .                                                | ...                                |
+| Day 20    | 0/10         | .                                                | ...                                |
+| Day 21    | 0/10         | .                                                | ...                                |
+| Day 22    | 0/10         | .                                                | ...                                |
+| Day 23    | 0/10         | .                                                | ...                                |
+| Day 24    | 0/10         | .                                                | ...                                |
+| Day 25    | 0/10         | .                                                | ...                                |
