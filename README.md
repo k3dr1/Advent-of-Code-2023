@@ -28,7 +28,7 @@ I will tried not to use my main languages (C++/Python) for as long as I can, to 
 | Day 15    | 5/10         | Hashtables! Also pretty easy                     | ...                                |
 | Day 16    | 6/10         | The logic was tedious, but overall not too hard  | ...                                |
 | Day 17    | 8/10         | Bruhhh, spent way too much time on this          | Pathfinding (spec. A* & Dijkstra)  |
-| Day 18    | 0/10         | .                                                | ...                                |
+| Day 18    | 0/10         | Shoelacemaxxing                                  | ...                                |
 | Day 19    | 0/10         | .                                                | ...                                |
 | Day 20    | 0/10         | .                                                | ...                                |
 | Day 21    | 0/10         | .                                                | ...                                |
