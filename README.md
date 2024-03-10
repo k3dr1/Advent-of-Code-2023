@@ -2,7 +2,7 @@
 
 My solutions to Advent Of Code 2023!
 
-I will try to not use my main languages (C++/Python) for as long as I can, to make it a little harder for myself)
+I will tried not to use my main languages (C++/Python) for as long as I can, to make it a little harder for myself). During the event itself I got until day 18 but then had to finish up my assignments and prepare for uni exams. I am planning to finish the remaining problems at a later time, after I am done with Jason Gregory's Game Engine Architecture book.
 
 ##### The main objective is to not get filtered for as long as possible. The secondary objectives are:
 * Improve my regex skills
