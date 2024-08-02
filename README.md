@@ -8,6 +8,7 @@ I tried not to use my main languages (C++/Python) for as long as I can, to make 
 * Improve my regex skills
 * Learn Lua
 * Improve my understanding of various algorithms
+* Revise algos
 
 | Day       | Difficulty   | Notes                                            | Learned & Revised                  |
 | --------- | ------------ | ------------------------------------------------ | ---------------------------------  |
