@@ -177,26 +177,37 @@ int pathfind(vector<string> grid)
     return -1;
 }
 
-char asciiToNum(char c) {
+char asciiToNum(char c)
+{
     switch (c) {
-        case ('1'): return 1;
-        case ('2'): return 2;
-        case ('3'): return 3;
-        case ('4'): return 4;
-        case ('5'): return 5;
-        case ('6'): return 6;
-        case ('7'): return 7;
-        case ('8'): return 8;
-        case ('9'): return 9;
-        case ('0'): return 0;
-        default: return -1;
+    case ('1'):
+        return 1;
+    case ('2'):
+        return 2;
+    case ('3'):
+        return 3;
+    case ('4'):
+        return 4;
+    case ('5'):
+        return 5;
+    case ('6'):
+        return 6;
+    case ('7'):
+        return 7;
+    case ('8'):
+        return 8;
+    case ('9'):
+        return 9;
+    case ('0'):
+        return 0;
+    default:
+        return -1;
     }
 }
 
 // PART 2 STUFF
 
 enum Dir {
-    //NoDirection = -1,
     Up = 0,
     Right = 1,
     Down = 2,
@@ -204,38 +215,65 @@ enum Dir {
 };
 
 enum MovementRestriction {
-    //NoRestriction = -1,
+    // NoRestriction = -1,
     Horizontal = 0,
     Vertical = 1
 };
 
-bool isDirBlocked(Dir d, MovementRestriction movRestriction) {
+bool isDirBlocked(Dir d, MovementRestriction movRestriction)
+{
     switch (movRestriction) {
-        //case (MovementRestriction::NoRestriction): return false;
-        case (MovementRestriction::Horizontal): return (d == Dir::Right || d == Dir::Left);
-        case (MovementRestriction::Vertical): return (d == Dir::Up || d == Dir::Down);
+    // case (MovementRestriction::NoRestriction): return false;
+    case (MovementRestriction::Horizontal):
+        return (d == Dir::Right || d == Dir::Left);
+    case (MovementRestriction::Vertical):
+        return (d == Dir::Up || d == Dir::Down);
     }
     std::unreachable();
 }
 
-MovementRestriction dirToMovementRestriction(Dir d) {
+MovementRestriction dirToMovementRestriction(Dir d)
+{
     switch (d) {
-        //case (Dir::NoDirection): return MovementRestriction::NoRestriction;
-        case (Dir::Up):    return MovementRestriction::Vertical;
-        case (Dir::Down):  return MovementRestriction::Vertical;
-        case (Dir::Right): return MovementRestriction::Horizontal;
-        case (Dir::Left):  return MovementRestriction::Horizontal;
+    // case (Dir::NoDirection): return MovementRestriction::NoRestriction;
+    case (Dir::Up):
+        return MovementRestriction::Vertical;
+    case (Dir::Down):
+        return MovementRestriction::Vertical;
+    case (Dir::Right):
+        return MovementRestriction::Horizontal;
+    case (Dir::Left):
+        return MovementRestriction::Horizontal;
     }
     std::unreachable();
 }
 
-Dir oppositeDir(Dir d) {
+Dir oppositeDir(Dir d)
+{
     switch (d) {
-        //case (Dir::NoDirection): return Dir::NoDirection;
-        case (Dir::Up): return Dir::Down;
-        case (Dir::Down): return Dir::Up;
-        case (Dir::Right): return Dir::Left;
-        case (Dir::Left): return Dir::Right;
+    case (Dir::Up):
+        return Dir::Down;
+    case (Dir::Down):
+        return Dir::Up;
+    case (Dir::Right):
+        return Dir::Left;
+    case (Dir::Left):
+        return Dir::Right;
+    }
+    std::unreachable();
+}
+
+constexpr const std::array<Dir, 2> getOrthogonalDirections(Dir d)
+{
+    switch (d) {
+    case (Dir::Up):
+        return { Dir::Left, Dir::Right };
+    case (Dir::Down):
+        return { Dir::Left, Dir::Right };
+    case (Dir::Right):
+        return { Dir::Up, Dir::Down };
+    case (Dir::Left):
+        return { Dir::Up, Dir::Down };
     }
     std::unreachable();
 }
@@ -244,153 +282,126 @@ struct vec2 {
     int x;
     int y;
 
-    vec2 operator+(const vec2 other) {
-        return vec2{x + other.x, y + other.y};
+    vec2 operator+(const vec2 other)
+    {
+        return vec2 { x + other.x, y + other.y };
     }
 
-    vec2 operator-(const vec2 other) {
-        return vec2{x - other.x, y - other.y};
+    vec2 operator-(const vec2 other)
+    {
+        return vec2 { x - other.x, y - other.y };
     }
 
-    vec2 operator*(const int a) {
-        return vec2{a*x, a*y};
+    vec2 operator*(const int a)
+    {
+        return vec2 { a * x, a * y };
     }
 };
 
-vec2 dirToVec(Dir d) {
+vec2 dirToVec(Dir d)
+{
     switch (d) {
-        //case (Dir::NoDirection): return {0,0};
-        case (Dir::Up): return {0,-1};
-        case (Dir::Down): return {0,1};
-        case (Dir::Right): return {1,0};
-        case (Dir::Left): return {-1,0};
+    case (Dir::Up):
+        return { 0, -1 };
+    case (Dir::Down):
+        return { 0, 1 };
+    case (Dir::Right):
+        return { 1, 0 };
+    case (Dir::Left):
+        return { -1, 0 };
     }
     std::unreachable();
 }
 
-
 struct Cell {
     vec2 coord;
-    //Dir blockedDirection;
-    MovementRestriction movRestriction;
+    // MovementRestriction movRestriction;
+    Dir lastMovedDirection;
+    int numMoves;
     int heatLoss;
 
-    const bool operator==(const Cell &other) {
+    const bool operator==(const Cell& other)
+    {
         return (coord.x == other.coord.x
-            && coord.y == other.coord.y
-            && movRestriction == other.movRestriction);
+            && coord.y == other.coord.y);
     }
 };
 
-bool inside(const vec2 &v, const int width, const int height) {
+bool inside(const vec2& v, const int width, const int height)
+{
     return ((0 <= v.x)
-         && (v.x < width)
-         && (0 <= v.y)
-         && (v.y < height));
+        && (v.x < width)
+        && (0 <= v.y)
+        && (v.y < height));
 }
 
-const std::vector<Cell> generateJumps(const Cell &pos, const std::vector<std::vector<char>> &grid) {
-    const int H = grid.size();
-    const int W = grid.at(0).size();
+const std::vector<Cell> generateNeighbors(const Cell& cell, const std::vector<std::vector<char>>& grid)
+{
+    static const int H = grid.size();
+    static const int W = grid.at(0).size();
     constexpr int minJump = 4;
     constexpr int maxJump = 10;
-    std::vector<Cell> generated{};
+    std::vector<Cell> generated {};
 
-    for (Dir d : {Up, Right, Down, Left}) {
-        //if ((pos.blockedDirection == d) || (oppositeDir(d) == pos.blockedDirection)) continue;
-        if (isDirBlocked(d, pos.movRestriction)) continue;
-        int newHeatLoss = pos.heatLoss;
-        vec2 movementVec = dirToVec(d);
-
-        vec2 newPos {pos.coord.x, pos.coord.y};
-
-        for (int i = 1; i <= maxJump; i++) {
-            newPos.x += movementVec.x;
-            newPos.y += movementVec.y;
-            if(!inside(newPos, W, H)) break;
-            newHeatLoss += grid.at(newPos.y).at(newPos.x);
-
-            //std::cout << "Checking newPos x=" << newPos.x << " y=" << newPos.y << " incurredHeatLoss=" << newHeatLoss << '\n';
-
-            // Only add the possible jumps
-            if (minJump <= i && i <= maxJump) 
-                generated.emplace_back(newPos, dirToMovementRestriction(d), newHeatLoss);
-        }
+    if (cell.numMoves < maxJump) {
+        const auto movementVector = dirToVec(cell.lastMovedDirection);
+        const vec2 newPos = { cell.coord.x + movementVector.x, cell.coord.y + movementVector.y };
+        if (inside(newPos, W, H))
+            generated.emplace_back(newPos, 
+                                   cell.lastMovedDirection, 
+                                   cell.numMoves + 1, 
+                                   cell.heatLoss + grid.at(newPos.y).at(newPos.x));
     }
+
+    for (const auto d : getOrthogonalDirections(cell.lastMovedDirection)) {
+        const auto movementVector = dirToVec(d);
+        vec2 newPos { cell.coord.x, cell.coord.y };
+        int incurredHeatLoss = cell.heatLoss;
+        bool outside = false;
+        for (int i = 1; i <= minJump; i++) {
+            newPos = newPos + movementVector;
+            if (!inside(newPos, W, H)) {
+                outside = true;
+                break;
+            };
+            incurredHeatLoss += grid.at(newPos.y).at(newPos.x);
+        }
+        if (!outside)
+            generated.emplace_back(newPos, d, minJump, incurredHeatLoss);
+    }
+
     return generated;
 }
 
-const std::vector<Cell> generateJumps2(const Cell &pos, const std::vector<std::vector<char>> &grid) {
-    const int H = grid.size();
-    const int W = grid.at(0).size();
-    constexpr int minJump = 4;
-    constexpr int maxJump = 10;
-    std::vector<Cell> generated{};
-
-    for (Dir d : {Up, Right, Down, Left}) {
-        if (isDirBlocked(d, pos.movRestriction)) continue;
-        int newHeatLoss = pos.heatLoss;
-        vec2 movementVec = dirToVec(d);
-
-        vec2 newPos {pos.coord.x, pos.coord.y};
-
-        for (int i = 1; i <= maxJump; i++) {
-            newPos.x += movementVec.x;
-            newPos.y += movementVec.y;
-            if(!inside(newPos, W, H)) break;
-            newHeatLoss += grid.at(newPos.y).at(newPos.x);
-
-            // Only add the possible jumps
-            if (minJump <= i && i <= maxJump) 
-                generated.emplace_back(newPos, dirToMovementRestriction(d), newHeatLoss);
-        }
-    }
-    return generated;
-}
-
-//std::string cellToKeyString(const Cell &cell) {
-//    const auto key = std::to_string(cell.coord.x) + "," 
-//        + std::to_string(cell.coord.y) + "," 
-//        + std::to_string(cell.movRestriction);
-//    return key;
-//}
-
-template<>
+template <>
 struct std::hash<Cell> {
     std::size_t operator()(const Cell& cell) const
     {
-        return ((cell.coord.x<<16) | (cell.coord.y<<8) | (cell.movRestriction));
+        return ((cell.coord.x << 24) | (cell.coord.y << 16) | (cell.numMoves<<8) | (cell.lastMovedDirection));
     }
 };
 
 struct Equal {
-    bool operator()(const Cell &a, const Cell &b) const {
+    bool operator()(const Cell& a, const Cell& b) const
+    {
         return (a.coord.x == b.coord.x
-        && a.coord.y == b.coord.y
-        && a.movRestriction == b.movRestriction);
+            && a.coord.y == b.coord.y);
     }
 };
 
-//std::string cellToKey(const Cell &cell) {
-//    const auto key = std::to_string(cell.coord.x) + "," 
-//        + std::to_string(cell.coord.y) + "," 
-//        + std::to_string(cell.movRestriction);
-//    return key;
-//}
-
-int findMindHeatLoss2(const std::vector<std::vector<char>> &grid)
+int findMindHeatLoss2(const std::vector<std::vector<char>>& grid)
 {
-    auto startHorizontal = Cell { 0, 0, MovementRestriction::Horizontal, 0 };
-    auto startVertical   = Cell { 0, 0, MovementRestriction::Vertical, 0 };
-    auto dijkstraCmp =  [](const Cell &a, const Cell &b) { return a.heatLoss >= b.heatLoss;};
-    auto heuristicCmp = [&grid](const Cell& a, const Cell& b) { 
+    auto startHorizontal = Cell { 0, 0, Dir::Right, 10, 0 };
+    auto startVertical =   Cell { 0, 0, Dir::Down,  10, 0 };
+    auto dijkstraCmp = [](const Cell& a, const Cell& b) { return a.heatLoss >= b.heatLoss; };
+    auto heuristicCmp = [&grid](const Cell& a, const Cell& b) {
         const int h_a = ((grid.size() - 1) - a.coord.y) + ((grid.at(0).size() - 1) - a.coord.x);
         const int f_a = (a.heatLoss) + (h_a);
 
         const int h_b = ((grid.size() - 1) - b.coord.y) + ((grid.at(0).size() - 1) - b.coord.x);
         const int f_b = (b.heatLoss) + (h_b);
 
-        return f_a >= f_b; 
+        return f_a >= f_b;
     };
 
     std::unordered_map<Cell, int, std::hash<Cell>, Equal> visited;
@@ -408,33 +419,35 @@ int findMindHeatLoss2(const std::vector<std::vector<char>> &grid)
         const auto pos = pq.top();
         pq.pop();
 
-        if (count%1'000'000 == 0) {
+        //if (true) {
+        if (count % 1'000'000 == 0) {
             std::cout << "Front of the queue: x=" << pos.coord.x
-                << " y=" << pos.coord.y
-                << " blockedDir=" << pos.movRestriction
-                << " heatLoss=" << pos.heatLoss
-                << " distanceToEnd=" << ((grid.size() - 1) - pos.coord.y) + ((grid.at(0).size() - 1) - pos.coord.x)
-                << '\n';
+                      << " y=" << pos.coord.y
+                      << " lastMovedDirection=" << pos.lastMovedDirection
+                      << " numMoves=" << pos.numMoves
+                      << " heatLoss=" << pos.heatLoss
+                      << " distanceToEnd=" << ((grid.size() - 1) - pos.coord.y) + ((grid.at(0).size() - 1) - pos.coord.x)
+                      << '\n';
         }
 
         if ((pos.coord.y == grid.size() - 1) && (pos.coord.x == grid.at(0).size() - 1)) {
             return pos.heatLoss;
         }
 
-        //std::cout << "Not the end position\n";
+        // std::cout << "Not the end position\n";
 
         visited[pos] = pos.heatLoss;
 
-        //std::cout << "Added it to the visited hashmap\n";
+        // std::cout << "Added it to the visited hashmap\n";
 
-        for (const auto& cell : generateJumps(pos, grid)) {
+        for (const auto& cell : generateNeighbors(pos, grid)) {
 
             //std::cout << "Generated jumps, checking\n";
-            //const auto genKey = cellToKey(cell);
+            // const auto genKey = cellToKey(cell);
 
             if (auto const valIt = visited.find(cell);
                 (valIt == visited.end()) || (valIt->second > cell.heatLoss)) {
-                    pq.push(cell);
+                pq.push(cell);
             }
         }
     }
@@ -444,23 +457,23 @@ int findMindHeatLoss2(const std::vector<std::vector<char>> &grid)
 int main()
 {
 
-    //ifstream f("example.txt");
+    // ifstream f("example.txt");
 
-    //if (!f.is_open()) {
-    //    std::cout << "Couldnt open the file\n";
-    //    return 1;
-    //}
+    // if (!f.is_open()) {
+    //     std::cout << "Couldnt open the file\n";
+    //     return 1;
+    // }
 
-    //vector<string> grid;
-    //string line;
-    //while (getline(f, line)) {
-    //    std::cout << line << '\n';
-    //    grid.push_back(line);
-    //}
+    // vector<string> grid;
+    // string line;
+    // while (getline(f, line)) {
+    //     std::cout << line << '\n';
+    //     grid.push_back(line);
+    // }
 
-    //int res = min_heat_loss(grid);
-    //int res = pathfind(grid);
-    //std::cout << "The answer for part 1 is " << res << '\n';
+    // int res = min_heat_loss(grid);
+    // int res = pathfind(grid);
+    // std::cout << "The answer for part 1 is " << res << '\n';
 
     std::cout << "==[Starting part 2]==" << '\n';
 
@@ -471,18 +484,18 @@ int main()
         return 1;
     }
 
-    vector<vector<char>> grid{};
+    vector<vector<char>> grid {};
     string line;
     while (std::getline(f, line)) {
         std::vector<char> row;
-        //std::cout << "Processing " << line << '\n';
+        // std::cout << "Processing " << line << '\n';
         for (int i = 0; i < line.size(); i++) {
-            //std::cout << "i=" << i << " line[i]=" << line[i] << '\n';
+            // std::cout << "i=" << i << " line[i]=" << line[i] << '\n';
             if (asciiToNum(line[i]) != -1) {
                 row.push_back(asciiToNum(line[i]));
             }
         }
-        //std::cout << "\n";
+        // std::cout << "\n";
         grid.push_back(row);
     }
 
@@ -501,7 +514,6 @@ int main()
     } catch (std::exception e) {
         std::cout << e.what() << '\n';
     }
-
 
     return 0;
 }
