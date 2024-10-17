@@ -2,6 +2,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <queue>
 #include <string>
@@ -214,66 +215,13 @@ enum Dir {
     Left = 3
 };
 
-enum MovementRestriction {
-    // NoRestriction = -1,
-    Horizontal = 0,
-    Vertical = 1
-};
-
-bool isDirBlocked(Dir d, MovementRestriction movRestriction)
-{
-    switch (movRestriction) {
-    // case (MovementRestriction::NoRestriction): return false;
-    case (MovementRestriction::Horizontal):
-        return (d == Dir::Right || d == Dir::Left);
-    case (MovementRestriction::Vertical):
-        return (d == Dir::Up || d == Dir::Down);
-    }
-    std::unreachable();
-}
-
-MovementRestriction dirToMovementRestriction(Dir d)
+constexpr const std::array<Dir, 2> getOrthogonalDirections(const Dir d)
 {
     switch (d) {
-    // case (Dir::NoDirection): return MovementRestriction::NoRestriction;
-    case (Dir::Up):
-        return MovementRestriction::Vertical;
-    case (Dir::Down):
-        return MovementRestriction::Vertical;
-    case (Dir::Right):
-        return MovementRestriction::Horizontal;
-    case (Dir::Left):
-        return MovementRestriction::Horizontal;
-    }
-    std::unreachable();
-}
-
-Dir oppositeDir(Dir d)
-{
-    switch (d) {
-    case (Dir::Up):
-        return Dir::Down;
-    case (Dir::Down):
-        return Dir::Up;
-    case (Dir::Right):
-        return Dir::Left;
-    case (Dir::Left):
-        return Dir::Right;
-    }
-    std::unreachable();
-}
-
-constexpr const std::array<Dir, 2> getOrthogonalDirections(Dir d)
-{
-    switch (d) {
-    case (Dir::Up):
-        return { Dir::Left, Dir::Right };
-    case (Dir::Down):
-        return { Dir::Left, Dir::Right };
-    case (Dir::Right):
-        return { Dir::Up, Dir::Down };
-    case (Dir::Left):
-        return { Dir::Up, Dir::Down };
+    case (Dir::Up):  return { Dir::Left, Dir::Right };
+    case (Dir::Down): return { Dir::Left, Dir::Right };
+    case (Dir::Right): return { Dir::Up, Dir::Down };
+    case (Dir::Left): return { Dir::Up, Dir::Down };
     }
     std::unreachable();
 }
@@ -281,50 +229,24 @@ constexpr const std::array<Dir, 2> getOrthogonalDirections(Dir d)
 struct vec2 {
     int x;
     int y;
-
-    vec2 operator+(const vec2 other)
-    {
-        return vec2 { x + other.x, y + other.y };
-    }
-
-    vec2 operator-(const vec2 other)
-    {
-        return vec2 { x - other.x, y - other.y };
-    }
-
-    vec2 operator*(const int a)
-    {
-        return vec2 { a * x, a * y };
-    }
 };
 
 vec2 dirToVec(Dir d)
 {
     switch (d) {
-    case (Dir::Up):
-        return { 0, -1 };
-    case (Dir::Down):
-        return { 0, 1 };
-    case (Dir::Right):
-        return { 1, 0 };
-    case (Dir::Left):
-        return { -1, 0 };
+    case (Dir::Up): return { 0, -1 };
+    case (Dir::Down): return { 0, 1 };
+    case (Dir::Right): return { 1, 0 };
+    case (Dir::Left): return { -1, 0 };
     }
     std::unreachable();
 }
 
 struct Cell {
     vec2 coord;
-    // MovementRestriction movRestriction;
     Dir lastMovedDirection;
     int numMoves;
     int heatLoss;
-
-    const bool operator==(const Cell& other)
-    {
-        return (coord.x == other.coord.x
-            && coord.y == other.coord.y);
-    }
 };
 
 bool inside(const vec2& v, const int width, const int height)
@@ -359,7 +281,8 @@ const std::vector<Cell> generateNeighbors(const Cell& cell, const std::vector<st
         int incurredHeatLoss = cell.heatLoss;
         bool outside = false;
         for (int i = 1; i <= minJump; i++) {
-            newPos = newPos + movementVector;
+            newPos.x = newPos.x + movementVector.x;
+            newPos.y = newPos.y + movementVector.y;
             if (!inside(newPos, W, H)) {
                 outside = true;
                 break;
@@ -419,14 +342,14 @@ int findMindHeatLoss2(const std::vector<std::vector<char>>& grid)
         const auto pos = pq.top();
         pq.pop();
 
-        //if (true) {
         if (count % 1'000'000 == 0) {
-            std::cout << "Front of the queue: x=" << pos.coord.x
-                      << " y=" << pos.coord.y
+            std::cout << "Front of the queue: x=" << std::setw(3) << pos.coord.x
+                      << " y=" << std::setw(3) << pos.coord.y
                       << " lastMovedDirection=" << pos.lastMovedDirection
                       << " numMoves=" << pos.numMoves
                       << " heatLoss=" << pos.heatLoss
                       << " distanceToEnd=" << ((grid.size() - 1) - pos.coord.y) + ((grid.at(0).size() - 1) - pos.coord.x)
+                      << " iteration=" << count
                       << '\n';
         }
 
