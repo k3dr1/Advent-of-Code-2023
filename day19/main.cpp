@@ -1,3 +1,4 @@
+#include <charconv>
 #include <fstream>
 #include <iostream>
 #include <iterator>
@@ -55,6 +56,7 @@ int main()
     while (std::getline(f, line)) {
         if (line.at(0) != '{') {
             // Workflows
+            std::vector<Rule> workflow;
             auto i = 0;
             while (line.at(i) != '{') i++;
             const auto name = line.substr(0, i);
@@ -67,10 +69,21 @@ int main()
                 | std::views::split(',')
                 | std::views::transform([](const auto&& s){return std::string_view(&*s.begin(), std::ranges::distance(s));})
             ;
-            for (auto const r : split) {
-                std::cout << r << '\n';
+            for (auto const &r : split) {
+                if (r.contains(':')) {
+                    // Conditional rule
+                    const auto p = Property{r.at(0)};
+                    const auto sign = r.at(1);
+                    int num = 0;
+                    std::from_chars(r.data(), r.data() + r.size() - 1, &num);
+                    const auto interval = (r.at(1) == '<') 
+                        ? std::make_pair(0, std::stoll(std::string(r), 2)) : {};
+                    workflow.emplace_back(ConditionalRule(p, ))
+                } else {
+                    // Unconditional rule
+                    workflow.emplace_back(UnconditionalRule{std::string(r)});
+                }
             }
-            std::cout << '\n';
 
         } else {
             // Parts
