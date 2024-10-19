@@ -24,6 +24,11 @@ unsigned long long partSum(const Part &part) {
     return (part.x + part.m + part.a + part.s);
 }
 
+unsigned long long consecutiveSum(const unsigned long long a, const unsigned long long b) {
+    if (a > b) return consecutiveSum(b, a);
+    return (b*(b+1)/2 - (a-1)*a/2);
+}
+
 struct IntervalPart {
     std::pair<unsigned long long, unsigned long long> x{0, maxULL};
     std::pair<unsigned long long, unsigned long long> m{0, maxULL};
@@ -125,17 +130,12 @@ std::vector<IntervalPart> construct(
     const auto rule = workflow.at(ruleIdx);
 
     if (!isConditional(rule)) {
-        if (std::get<UnconditionalRule>(rule).dest == "A") {
-            return {intervalPart};
-        } else {
-            return {};
-        }
+        const auto unconditionalRule = std::get<UnconditionalRule>(rule);
+        return construct(intervalPart, unconditionalRule.dest, 0, workflows);
     }
 
     const auto conditionalRule = std::get<ConditionalRule>(rule);
     const auto ruleInterval = conditionalRule.interval;
-
-    std::cout << "rule interval: [" << ruleInterval.first << "," << ruleInterval.second << "]\n";
 
     const auto acceptedInterval{intervalIntersection(
         getProperty(intervalPart, conditionalRule.property),
@@ -202,7 +202,7 @@ bool trace(
 
 int main()
 {
-    auto f = std::ifstream { "example.txt" };
+    auto f = std::ifstream { "input.txt" };
 
     std::vector<Part> parts;
     std::unordered_map<std::string, std::vector<Rule>> workflows;
@@ -216,7 +216,6 @@ int main()
             std::vector<Rule> workflow;
             const auto name = line.substr(0, line.find('{'));
             std::cout << "Parsing workflow: " << name << '\n';
-            std::cout << "workflow name length: " << name.length() << '\n';
 
             auto split = line 
                 | std::views::drop_while([](const auto c){ return c != '{'; }) 
@@ -240,17 +239,9 @@ int main()
 
                     auto back = std::get<ConditionalRule>(workflow.at(workflow.size() - 1));
 
-                    //std::cout << "Conditional rule: property=" << static_cast<char>(back.property)
-                    //    << " interval=[" << back.interval.first 
-                    //    << "," << back.interval.second
-                    //    << "] dest=" << back.dest 
-                    //    << '\n';
-
                 } else {
                     // Unconditional rule
 
-                    //std::cout << "Unconditional rule: dest=" << std::string(r) << '\n';
-                    
                     workflow.emplace_back(UnconditionalRule{std::string(r)});
                 }
             }
@@ -274,21 +265,18 @@ int main()
         }
     }
 
-    auto part1 = 0;
-    auto part2 = 0;
+    auto part1 = 0ULL;
+    auto part2 = 0ULL;
     auto count = 0;
     std::string start = "in";
-    //for (const auto &part : parts) {
-    //    count++;
-    //    std::cout << "tracing part_" << count << " - ";
-    //    auto status = trace(part, start, workflows);
-    //    std::cout << status << '\n';
-    //    if (status) part1 += partSum(part);
-    //}
 
-    //std::cout << "Answer for part 1 is " << part1 << '\n';
+    for (const auto &part : parts) {
+        count++;
+        auto status = trace(part, start, workflows);
+        if (status) part1 += partSum(part);
+    }
 
-    std::cout << "Starting part 2\n";
+    std::cout << "Answer for part 1 is " << part1 << '\n';
 
     auto intervalPart = IntervalPart(
         {1ULL, 4000ULL},
@@ -301,27 +289,12 @@ int main()
         construct(intervalPart, "in", 0, workflows);
 
     for (const auto part : generatedParts) {
-        std::cout << "x " << part.x.first << " to " << part.x.second << '\n';
-        std::cout << "m " << part.m.first << " to " << part.m.second << '\n';
-        std::cout << "a " << part.a.first << " to " << part.a.second << '\n';
-        std::cout << "s " << part.s.first << " to " << part.s.second << "\n\n";
-
-        unsigned long long X = 0;
-        unsigned long long M = 0;
-        unsigned long long A = 0;
-        unsigned long long S = 0;
-        for (int i = part.x.first; i <= part.x.second; i++) X += i;
-        for (int i = part.m.first; i <= part.m.second; i++) X += i;
-        for (int i = part.a.first; i <= part.a.second; i++) X += i;
-        for (int i = part.s.first; i <= part.s.second; i++) X += i;
-
-        unsigned long long x_bar = part.x.second - part.x.first + 1;
-        unsigned long long m_bar = part.m.second - part.m.first + 1;
-        unsigned long long a_bar = part.a.second - part.a.first + 1;
-        unsigned long long s_bar = part.s.second - part.s.first + 1;
-
-        part2 += X + x_bar*M + x_bar*m_bar*A + x_bar*m_bar*a_bar*S;
+        part2 += (part.x.second - part.x.first + 1)
+               * (part.m.second - part.m.first + 1)
+               * (part.a.second - part.a.first + 1)
+               * (part.s.second - part.s.first + 1);
     }
+
 
     std::cout << "Answer for part 2 is " << part2 << '\n';
 
