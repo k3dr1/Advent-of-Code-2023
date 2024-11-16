@@ -36,3 +36,4 @@ I tried not to use my main languages (C++/Python) for as long as I can, to make 
 | Day 23    | 0/10         | .                                                   | ...                                |
 | Day 24    | 0/10         | .                                                   | ...                                |
 | Day 25    | 0/10         | .                                                   | ...                                |
+

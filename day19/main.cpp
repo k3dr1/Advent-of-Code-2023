@@ -30,10 +30,10 @@ unsigned long long consecutiveSum(const unsigned long long a, const unsigned lon
 }
 
 struct IntervalPart {
-    std::pair<unsigned long long, unsigned long long> x{0, maxULL};
-    std::pair<unsigned long long, unsigned long long> m{0, maxULL};
-    std::pair<unsigned long long, unsigned long long> a{0, maxULL};
-    std::pair<unsigned long long, unsigned long long> s{0, maxULL};
+    std::pair<unsigned long long, unsigned long long> x{1ULL, maxULL};
+    std::pair<unsigned long long, unsigned long long> m{1ULL, maxULL};
+    std::pair<unsigned long long, unsigned long long> a{1ULL, maxULL};
+    std::pair<unsigned long long, unsigned long long> s{1ULL, maxULL};
 };
 
 enum class Property {
@@ -294,7 +294,6 @@ int main()
                * (part.a.second - part.a.first + 1)
                * (part.s.second - part.s.first + 1);
     }
-
 
     std::cout << "Answer for part 2 is " << part2 << '\n';
 
